@@ -192,6 +192,18 @@ export default function Settings() {
           >
             {t('translation|Theme')}
           </Typography>
+          {import.meta.env.REACT_APP_ENFORCED_THEME && (
+            <Typography
+              variant="caption"
+              sx={{
+                ml: 2,
+                color: 'text.secondary',
+                fontStyle: 'italic',
+              }}
+            >
+              {t('translation|(Enforced by administrator)')}
+            </Typography>
+          )}
         </Box>
         <Box
           sx={{
@@ -212,34 +224,41 @@ export default function Settings() {
               },
             }}
           >
-            {appThemes.map(it => (
-              <Box
-                key={it.name}
-                role="button"
-                tabIndex={0}
-                onKeyDown={e => {
-                  if (e.key === 'Enter' || e.key === ' ') dispatch(setTheme(it.name));
-                }}
-                sx={{
-                  cursor: 'pointer',
-                  border: themeName === it.name ? '2px solid' : '1px solid',
-                  borderColor: themeName === it.name ? 'primary' : 'divider',
-                  borderRadius: 2,
-                  p: 1,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  transition: '0.2 ease',
-                  '&:hover': {
-                    backgroundColor: 'divider',
-                  },
-                }}
-                onClick={() => dispatch(setTheme(it.name))}
-              >
-                <ThemePreview theme={it} size={110} />
-                <Box sx={{ mt: 1 }}>{capitalize(it.name)}</Box>
-              </Box>
-            ))}
+            {appThemes.map(it => {
+              const isEnforced = !!import.meta.env.REACT_APP_ENFORCED_THEME;
+              const isDisabled = isEnforced && themeName !== it.name;
+
+              return (
+                <Box
+                  key={it.name}
+                  role="button"
+                  tabIndex={isDisabled ? -1 : 0}
+                  onKeyDown={e => {
+                    if (!isDisabled && (e.key === 'Enter' || e.key === ' '))
+                      dispatch(setTheme(it.name));
+                  }}
+                  sx={{
+                    cursor: isDisabled ? 'not-allowed' : 'pointer',
+                    border: themeName === it.name ? '2px solid' : '1px solid',
+                    borderColor: themeName === it.name ? 'primary' : 'divider',
+                    borderRadius: 2,
+                    p: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    transition: '0.2 ease',
+                    opacity: isDisabled ? 0.5 : 1,
+                    '&:hover': {
+                      backgroundColor: isDisabled ? 'transparent' : 'divider',
+                    },
+                  }}
+                  onClick={() => !isDisabled && dispatch(setTheme(it.name))}
+                >
+                  <ThemePreview theme={it} size={110} />
+                  <Box sx={{ mt: 1 }}>{capitalize(it.name)}</Box>
+                </Box>
+              );
+            })}
           </Box>
         </Box>
       </Box>

@@ -312,6 +312,11 @@ export function GlobalSearchContent({
   // Themes
   const appThemes = useAppThemes();
   const themeActions = useMemo(() => {
+    const isEnforced = !!import.meta.env.REACT_APP_ENFORCED_THEME;
+    if (isEnforced) {
+      // Don't show theme switcher in global search when theme is enforced
+      return [];
+    }
     return appThemes.map(theme => ({
       id: 'switch-theme-' + theme.name,
       subLabel: 'Theme',
