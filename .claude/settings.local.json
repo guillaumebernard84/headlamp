@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(go build:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm install)",
+      "Bash(HEADLAMP_CONFIG_DEFAULT_THEME=dark HEADLAMP_BACKEND_TOKEN=headlamp HEADLAMP_CONFIG_ENABLE_HELM=true HEADLAMP_CONFIG_ENABLE_DYNAMIC_CLUSTERS=true ./headlamp-server.exe:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

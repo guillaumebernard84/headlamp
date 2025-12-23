@@ -444,8 +444,9 @@ export function usePrefersColorScheme() {
 
 /**
  * Hook gets theme based on user preference, and also OS/Browser preference.
+ * @param defaultTheme - Optional default theme from backend config
  */
-export function getThemeName(): string {
+export function getThemeName(defaultTheme?: string): string {
   const themePreference = localStorage.headlampThemePreference;
 
   if (typeof window.matchMedia !== 'function') {
@@ -459,7 +460,10 @@ export function getThemeName(): string {
     // A selected theme preference takes precedence.
     themeName = themePreference;
   } else {
-    if (prefersLight) {
+    if (defaultTheme && (defaultTheme === 'light' || defaultTheme === 'dark')) {
+      // Use the default theme from backend config if set
+      themeName = defaultTheme;
+    } else if (prefersLight) {
       themeName = 'light';
     } else if (prefersDark) {
       themeName = 'dark';

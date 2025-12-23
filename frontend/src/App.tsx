@@ -20,9 +20,9 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import React, { useMemo } from 'react';
 import { I18nextProvider } from 'react-i18next';
-import { Provider } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
 import AppContainer from './components/App/AppContainer';
-import { useCurrentAppTheme } from './components/App/themeSlice';
+import { setTheme, useCurrentAppTheme } from './components/App/themeSlice';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import ErrorComponent from './components/common/ErrorPage';
 import i18n from './i18n/config';
@@ -38,11 +38,23 @@ setStore(store);
 
 function AppWithRedux(props: React.PropsWithChildren<{}>) {
   let themeName = useTypedSelector(state => state.theme.name);
+  const defaultTheme = useTypedSelector(state => state.config.defaultTheme);
+  const dispatch = useDispatch();
   usePrefersColorScheme();
   useElectronI18n();
 
+  // Update theme when defaultTheme loads from backend, but only if user hasn't set a preference
+  React.useEffect(() => {
+    if (defaultTheme && !localStorage.headlampThemePreference) {
+      const correctTheme = getThemeName(defaultTheme);
+      if (themeName !== correctTheme) {
+        dispatch(setTheme(correctTheme));
+      }
+    }
+  }, [defaultTheme, themeName, dispatch]);
+
   if (!themeName) {
-    themeName = getThemeName();
+    themeName = getThemeName(defaultTheme);
   }
 
   const currentAppTheme = useCurrentAppTheme();
