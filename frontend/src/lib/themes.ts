@@ -460,7 +460,7 @@ export function getThemeName(defaultTheme?: string): string {
     // A selected theme preference takes precedence.
     themeName = themePreference;
   } else {
-    if (defaultTheme && (defaultTheme === 'light' || defaultTheme === 'dark')) {
+    if (defaultTheme) {
       // Use the default theme from backend config if set
       themeName = defaultTheme;
     } else if (prefersLight) {
