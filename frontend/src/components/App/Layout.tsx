@@ -143,10 +143,7 @@ const fetchConfig = (dispatch: Dispatch<UnknownAction>) => {
       clustersToConfig[cluster.name] = cluster;
     });
 
-    const configToStore = {
-      ...config,
-      clusters: clustersToConfig,
-    };
+    const configToStore = { ...config, clusters: clustersToConfig };
 
     if (clusters === null) {
       dispatch(setConfig(configToStore));
